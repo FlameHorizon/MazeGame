@@ -8,7 +8,13 @@
 
 var game = new Game();
 Thread.Sleep(1000);
+game.MoveUp();
+Thread.Sleep(1000);
 game.MoveDown();
+Thread.Sleep(1000);
+game.MoveRight();
+Thread.Sleep(1000);
+game.MoveLeft();
 
 
 public class Player
@@ -50,6 +56,11 @@ public class Game
             PosTop = 1
         };
         InitializeBoard();
+        DrawPlayerPosition();
+    }
+
+    private void DrawPlayerPosition()
+    {
         Console.SetCursorPosition(_player.PosLeft, _player.PosTop);
         Console.Write("X");
     }
@@ -105,19 +116,6 @@ public class Game
             }
 
             _board[edgeSize - 1, edgeSize - 1] = "╝" + Environment.NewLine;
-            /*
-            // Draw bottom left corner
-            Console.Write("╚");
-
-            // Draw bottom strip. -2 because bottom left
-            // and bottom right corner also counts as size
-            for (var i = 0; i < edgeSize - 2; i++)
-            {
-                Console.Write("═");
-            }
-
-            Console.Write("╝" + Environment.NewLine);
-        */
         }
 
         // Drawing player icon.
@@ -137,25 +135,97 @@ public class Game
 
     public void MoveUp()
     {
+        if (IsPlayerInBounds(MoveDirection.Up) == false)
+        {
+            // Player can't move there, there is a obstacle.
+            return;
+        }
+
         // Clear up previous position where player was.
         Console.SetCursorPosition(_player.PosLeft, _player.PosTop);
         Console.Write(" ");
 
         // Move player to a different location.
         _player.MoveUp();
-        Console.SetCursorPosition(_player.PosLeft, _player.PosTop);
-        Console.Write("X");
+        DrawPlayerPosition();
+    }
+
+    private bool IsPlayerInBounds(MoveDirection direction)
+    {
+        return direction switch
+        {
+            MoveDirection.Up => string.IsNullOrWhiteSpace(
+                _board[_player.PosTop - 1, _player.PosLeft]),
+
+            MoveDirection.Down => string.IsNullOrWhiteSpace(
+                _board[_player.PosTop + 1, _player.PosLeft]),
+
+            MoveDirection.Left => string.IsNullOrWhiteSpace(
+                _board[_player.PosTop, _player.PosLeft - 1]),
+
+            MoveDirection.Right => string.IsNullOrWhiteSpace(
+                _board[_player.PosTop, _player.PosLeft + 1]),
+
+            _ => false
+        };
     }
 
     public void MoveDown()
     {
+        if (IsPlayerInBounds(MoveDirection.Down) == false)
+        {
+            // Player can't move there, there is a obstacle.
+            return;
+        }
+
         // Clear up previous position where player was.
         Console.SetCursorPosition(_player.PosLeft, _player.PosTop);
         Console.Write(" ");
 
         // Move player to a different location.
         _player.MoveDown();
-        Console.SetCursorPosition(_player.PosLeft, _player.PosTop);
-        Console.Write("X");
+        DrawPlayerPosition();
     }
+
+    public void MoveLeft()
+    {
+        if (IsPlayerInBounds(MoveDirection.Left) == false)
+        {
+            // Player can't move there, there is a obstacle.
+            return;
+        }
+        
+        // Clear up previous position where player was.
+        Console.SetCursorPosition(_player.PosLeft, _player.PosTop);
+        Console.Write(" ");
+
+        // Move player to a different location.
+        _player.MoveLeft();
+        DrawPlayerPosition();
+    }
+
+    public void MoveRight()
+    {
+        if (IsPlayerInBounds(MoveDirection.Right) == false)
+        {
+            // Player can't move there, there is a obstacle.
+            return;
+        }
+        
+        // Clear up previous position where player was.
+        Console.SetCursorPosition(_player.PosLeft, _player.PosTop);
+        Console.Write(" ");
+
+        // Move player to a different location.
+        _player.MoveRight();
+        DrawPlayerPosition();
+    }
+}
+
+public enum MoveDirection
+{
+    Up,
+    Down,
+    Left,
+    Right
 }
