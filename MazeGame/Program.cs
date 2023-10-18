@@ -40,6 +40,7 @@ public class Player
 public class Game
 {
     private readonly Player _player;
+    private string[,] _board;
 
     public Game()
     {
@@ -56,40 +57,55 @@ public class Game
     private void InitializeBoard()
     {
         Console.Clear();
+        _board = new string[4, 4];
         DrawBox(4);
 
         void DrawBox(int edgeSize)
         {
-            DrawTopLine(edgeSize);
-            DrawSides(edgeSize);
-            DrawBottomLine(edgeSize);
+            CreateTopLine(edgeSize);
+            CreateSides(edgeSize);
+            CreateBottomLine(edgeSize);
+            DrawBoard();
         }
 
-        void DrawTopLine(int edgeSize)
+        void CreateTopLine(int edgeSize)
         {
-            // Draw top left corner
-            Console.Write("╔");
+            _board[0, 0] = "╔";
 
-            // Draw top strip. -2 because top left
-            // and top right corner also counts as size
             for (var i = 0; i < edgeSize - 2; i++)
             {
-                Console.Write("═");
+                _board[0, i + 1] = "═";
             }
 
-            Console.Write("╗" + Environment.NewLine);
+            _board[0, edgeSize - 1] = "╗" + Environment.NewLine;
         }
 
-        void DrawSides(int edgeSize)
+        void CreateSides(int edgeSize)
         {
+            for (var i = 1; i < edgeSize - 1; i++)
+            {
+                _board[i, 0] = "║";
+
+                for (var j = 1; j < edgeSize - 1; j++)
+                {
+                    _board[i, j] = " ";
+                }
+
+                _board[i, edgeSize - 1] = "║" + Environment.NewLine;
+            }
+        }
+
+        void CreateBottomLine(int edgeSize)
+        {
+            _board[edgeSize - 1, 0] = "╚";
+
             for (var i = 0; i < edgeSize - 2; i++)
             {
-                Console.WriteLine($"║{new string(' ', edgeSize - 2)}║");
+                _board[edgeSize - 1, i + 1] = "═";
             }
-        }
 
-        void DrawBottomLine(int edgeSize)
-        {
+            _board[edgeSize - 1, edgeSize - 1] = "╝" + Environment.NewLine;
+            /*
             // Draw bottom left corner
             Console.Write("╚");
 
@@ -101,10 +117,22 @@ public class Game
             }
 
             Console.Write("╝" + Environment.NewLine);
+        */
         }
 
         // Drawing player icon.
         Console.CursorVisible = false;
+    }
+
+    private void DrawBoard()
+    {
+        for (var row = 0; row < _board.GetLength(0); row++)
+        {
+            for (var column = 0; column < _board.GetLength(1); column++)
+            {
+                Console.Write(_board[row, column]);
+            }
+        }
     }
 
     public void MoveUp()
